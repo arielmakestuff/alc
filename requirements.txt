@@ -3,4 +3,6 @@
 # scipy>=0.9
 aiohttp
 beautifulsoup4
+lxml
+selenium
 yarl

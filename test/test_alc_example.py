@@ -12,30 +12,35 @@
 
 
 # Stdlib imports
+from pathlib import Path
 
 # Third-party imports
 import pytest
 
 # Local imports
+import alc.core as core
 
 
 # ============================================================================
-# Function
+# Fixtures
 # ============================================================================
 
 
-def fib(n):
+@pytest.yield_fixture
+def phantomjs_bin():
     """
-    Fibonacci example function
+    Return absolute path of the phantomjs binary
 
-    :param n: integer
-    :return: n-th Fibonacci number
+    :return: pathlib.Path()
     """
-    assert n > 0
-    a, b = 1, 1
-    for i in range(n-1):
-        a, b = b, a+b
-    return a
+    oldpath = core.PHANTOMJS_BIN
+    rootdir = Path(str(pytest.config.rootdir))
+    core.PHANTOMJS_BIN = ret = (rootdir / 'var' / 'phantomjs' /
+                                'phantomjs-2.1.1.exe')
+    try:
+        yield ret
+    finally:
+        core.PHANTOMJS_BIN = oldpath
 
 
 # ============================================================================
@@ -43,13 +48,10 @@ def fib(n):
 # ============================================================================
 
 
-def test_fib():
+def test_run_link_check(phantomjs_bin):
     """Test fib()"""
-    assert fib(1) == 1
-    assert fib(2) == 1
-    assert fib(7) == 13
-    with pytest.raises(AssertionError):
-        fib(-10)
+    URL = r'http://www.worldvision.ca/aboutus/Media-Centre/Pages/LatestNews.aspx'
+    core.main([URL])
 
 
 # ============================================================================
