@@ -1,0 +1,5 @@
+currentversion = "0.1.0"
+
+[[place]]
+file = "alc/__init__.py"
+line-regex = '__version__'
